@@ -6,6 +6,7 @@ package no.oslomet.cs.algdat.Oblig2;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.Objects;
 
 
 public class DobbeltLenketListe<T> implements Liste<T> {
@@ -37,11 +38,33 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     private int endringer;         // antall endringer i listen
 
     public DobbeltLenketListe() {
-        throw new UnsupportedOperationException();
+        antall = 0;
+        endringer = 0;
+        //Passer på at dersom det er ingen noder vil hale og hode være null
+        hode = hale = null;
     }
 
     public DobbeltLenketListe(T[] a) {
-        throw new UnsupportedOperationException();
+        if (a == null){
+            throw new NullPointerException("Tabellen a er null!");
+        }
+        int i = 0;
+        for (; i < a.length; i++){
+            if (a[i] != null) {
+                hode = hale = new Node<>(a[i], null, null);
+                antall++;
+                break;
+            }
+        }
+        if(i != a.length){ // dersom det er flere elementer igjen i listen skal vi gå gjennom de
+            int j = i + 1; //legger i + 1 for at løkken ikke skal telle med head da den ellers vil bli telt to ganger
+            for(; j < a.length; j++){
+                if(a[j] != null){
+                    hale = hale.neste = new Node<>(a[j], hale, null);
+                    antall++;
+                }
+            }
+        }
     }
 
     public Liste<T> subliste(int fra, int til) {
@@ -50,16 +73,21 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public int antall() {
-        throw new UnsupportedOperationException();
+        return antall;
     }
 
     @Override
     public boolean tom() {
-        throw new UnsupportedOperationException();
+        if(antall == 0){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public boolean leggInn(T verdi) {
+        Objects.requireNonNull(verdi, "Hei, verdien er null! Verdien må være større enn null! : )");
         throw new UnsupportedOperationException();
     }
 
@@ -105,11 +133,41 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public String toString() {
-        throw new UnsupportedOperationException();
+        StringBuilder utskrift = new StringBuilder();
+        Node<T> current = hode;
+
+        if (antall == 0){
+            utskrift.append("[]");
+            return utskrift.toString();
+        }
+
+        utskrift.append("[ " + current.verdi);
+        for(int i = 0; i <= antall; i++){
+            utskrift.append(", " + current.verdi);
+            current = current.neste;
+        }
+
+        utskrift.append(" ]");
+        return utskrift.toString();
     }
 
     public String omvendtString() {
-        throw new UnsupportedOperationException();
+        StringBuilder utskrift = new StringBuilder();
+        Node<T> current = hale;
+
+        if (antall == 0){
+            utskrift.append("[]");
+            return utskrift.toString();
+        }
+
+        utskrift.append("[ " + current.verdi);
+        for(int i = antall; i > 0; i--){
+            utskrift.append(", " + current.verdi);
+            current = current.forrige;
+        }
+
+        utskrift.append(" ]");
+        return utskrift.toString();
     }
 
     @Override
