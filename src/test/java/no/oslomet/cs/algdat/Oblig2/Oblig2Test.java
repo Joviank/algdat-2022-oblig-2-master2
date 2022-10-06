@@ -419,8 +419,8 @@ class Oblig2Test {
 
         Character[] c = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',};
         DobbeltLenketListe<Character> cliste = new DobbeltLenketListe<>(c);
-
         if (!cliste.subliste(0, 1).toString().equals("[A]")) {
+            System.out.println(cliste.subliste(0,1));
             antallFeil++;
             System.out.println
                     ("Oppgave 3v: Sublisten skal inneholde kun første verdi i listen!");
