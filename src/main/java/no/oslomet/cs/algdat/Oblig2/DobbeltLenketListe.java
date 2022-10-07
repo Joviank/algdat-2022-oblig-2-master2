@@ -135,23 +135,28 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         Objects.requireNonNull(verdi, "Hei! Verdien MÅ være større eller lik 0!");
         if (indeks > antall){
             throw new IndexOutOfBoundsException("Indeks er større enn antall noder");
-        } else if (indeks < 0)
+        } else if (indeks < 0) {
             throw new IndexOutOfBoundsException("Indeksen kan ikke være negativ");
+        }
+        //hvis listen er tom og vi skal legge til en verdi
         if (antall == 0 && indeks == 0) {
             Node n = new Node<T>(verdi, null, null);
             hode = hale = n;
         }
+        //hvis vi skal legg til en verdi på starten
         Node n = new Node (verdi);
-
         if(indeks == 0){
             n.neste = hode;
             hode = n;
         }
         Node<T> current = finnNode(indeks);
+        //hvis vi skal legge til en verdi på slutten
         if(current.neste == null){
             hale.neste = n;
             n.neste = null;
-        } else{
+        }
+        //Hvis vi skal legge til en verdi imellom
+        else{
             current.neste = n;
             n.neste = current.neste;
             n.forrige = current;
@@ -170,9 +175,10 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
     private Node<T> finnNode(int indeks){
+        Objects.requireNonNull(indeks, "Hei, indeks er null! : )");
         if(indeks < antall/2){
             Node<T> current = hode;
-            int i=0;
+            int i = 0;
             while(i < indeks){
                 current = current.neste;
                 i++;
@@ -229,7 +235,36 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public T fjern(int indeks) {
-        throw new UnsupportedOperationException();
+        indeksKontroll(indeks,false);
+        Node<T> current = finnNode(indeks);
+        T lagretVerdi = current.verdi;
+
+        //Hvis elementet er på starten
+        if(indeks == 0){
+            //Hvis hode sin neste peker mot en node
+            if(current.neste != null){
+                hode = current;
+                current.neste = hode;
+                hode.forrige = null;
+            }
+            hode = hale = null;
+        }
+
+        //Hvis elementet er på slutten
+        if(current.neste == null){
+           current = hale;
+           hale = current.forrige;
+           hale.neste = null;
+        }
+
+        //Hvis elementet er i midten
+        else{
+            current.neste.forrige = current.forrige;
+            current.forrige.neste = current.neste;
+        }
+        antall--;
+        endringer++;
+        return lagretVerdi;
     }
 
     @Override
