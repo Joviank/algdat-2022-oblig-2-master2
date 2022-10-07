@@ -132,7 +132,33 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public void leggInn(int indeks, T verdi) {
-        throw new UnsupportedOperationException();
+        Objects.requireNonNull(verdi, "Hei! Verdien MÅ være større eller lik 0!");
+        if (indeks > antall){
+            throw new IndexOutOfBoundsException("Indeks er større enn antall noder");
+        } else if (indeks < 0)
+            throw new IndexOutOfBoundsException("Indeksen kan ikke være negativ");
+        if (antall == 0 && indeks == 0) {
+            Node n = new Node<T>(verdi, null, null);
+            hode = hale = n;
+        }
+        Node n = new Node (verdi);
+
+        if(indeks == 0){
+            n.neste = hode;
+            hode = n;
+        }
+        Node<T> current = finnNode(indeks);
+        if(current.neste == null){
+            hale.neste = n;
+            n.neste = null;
+        } else{
+            current.neste = n;
+            n.neste = current.neste;
+            n.forrige = current;
+            current.neste.forrige = n;
+        }
+        antall++;
+        endringer++;
     }
 
     @Override
@@ -144,8 +170,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
     private Node<T> finnNode(int indeks){
-        indeksKontroll(indeks,false);
-
         if(indeks < antall/2){
             Node<T> current = hode;
             int i=0;
@@ -168,6 +192,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public T hent(int indeks) {
+        indeksKontroll(indeks,false);
         return finnNode(indeks).verdi;
     }
 
