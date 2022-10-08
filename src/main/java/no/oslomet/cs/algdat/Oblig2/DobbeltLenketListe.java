@@ -48,24 +48,23 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         if (a == null){
             throw new NullPointerException("Tabellen a er null!");
         }
-        Node current = hode = hale;
-        int j = 0;
-        for (int i = 0; i < a.length; i++){
+        int i = 0;
+        for (; i < a.length; i++){
             if (a[i] != null) {
-                current = new Node<>(a[i], null, null);
+                hode = hale = new Node<>(a[i], null, null);
                 antall++;
-                j = i + 1; //legger i + 1 for at løkken ikke skal telle med head da den ellers vil bli telt to ganger
                 break;
             }
         }
+        if(i != a.length){ // dersom det er flere elementer igjen i listen skal vi gå gjennom de
+            int j = i + 1; //legger i + 1 for at løkken ikke skal telle med head da den ellers vil bli telt to ganger
             for(; j < a.length; j++){
                 if(a[j] != null){
-                    current = new Node<>(a[j], hale, null);
-                    current = current.neste;
+                    hale = hale.neste = new Node<>(a[j], hale, null);
                     antall++;
                 }
             }
-            hale = current;
+        }
     }
 
     public Liste<T> subliste(int fra, int til) {
@@ -77,11 +76,11 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         return utskrift;
     }
 
-    private void fraTilKontroll(int fra, int til, int antall){
+    private void fraTilKontroll(int fra, int til, int tabLengde){
         if(fra > til){
             throw new IllegalStateException();
         }
-        else if(fra < 0 || til > antall){
+        if(fra < 0 || til > tabLengde){
             throw new IndexOutOfBoundsException();
         }
     }
@@ -175,7 +174,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
     private Node<T> finnNode(int indeks){
-        Objects.requireNonNull(indeks, "Hei, indeks er null! : )");
         if(indeks < antall/2){
             Node<T> current = hode;
             int i = 0;
@@ -220,7 +218,9 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     @Override
     public T oppdater(int indeks, T nyverdi) {
         Objects.requireNonNull(nyverdi,"verdien kan ikke være null!");
+
         Node<T> gammel = finnNode(indeks);
+
         T gammelVerdi = gammel.verdi;
         gammel.verdi = nyverdi;
         endringer++;
