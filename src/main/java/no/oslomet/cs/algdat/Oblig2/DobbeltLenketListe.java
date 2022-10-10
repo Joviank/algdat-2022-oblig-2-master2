@@ -78,7 +78,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     private void fraTilKontroll(int fra, int til, int tabLengde){
         if(fra > til){
-            throw new IllegalStateException();
+            throw new IllegalArgumentException();
         }
         if(fra < 0 || til > tabLengde){
             throw new IndexOutOfBoundsException();
@@ -143,23 +143,28 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             hode = hale = n;
         }
         //hvis vi skal legg til en verdi på starten
-        Node n = new Node (verdi);
-        if(indeks == 0){
-            n.neste = hode;
-            hode = n;
-        }
-        Node<T> current = finnNode(indeks);
-        //hvis vi skal legge til en verdi på slutten
-        if(current.neste == null){
-            hale.neste = n;
-            n.neste = null;
-        }
-        //Hvis vi skal legge til en verdi imellom
-        else{
-            current.neste = n;
-            n.neste = current.neste;
-            n.forrige = current;
-            current.neste.forrige = n;
+        else {
+            Node n = new Node (verdi);
+            if (indeks == 0){
+                n.neste = hode;
+                hode.forrige = n;
+                hode = n;
+            }
+            Node<T> current = finnNode(indeks);
+            //hvis vi skal legge til en verdi på slutten
+            if(current.neste == null){
+                hale.neste = n;
+                n.forrige = hale;
+                n.neste = null;
+                hale = n;
+            }
+            //Hvis vi skal legge til en verdi imellom
+            else {
+                current.neste = n;
+                n.neste = current.neste;
+                n.forrige = current;
+                current.neste.forrige = n;
+            }
         }
         antall++;
         endringer++;
@@ -218,6 +223,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     @Override
     public T oppdater(int indeks, T nyverdi) {
         Objects.requireNonNull(nyverdi,"verdien kan ikke være null!");
+        indeksKontroll(indeks,false);
 
         Node<T> gammel = finnNode(indeks);
 
