@@ -366,19 +366,17 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         @Override
         public T next() {
-            if(!hasNext() == false){
-                throw new NoSuchElementException("Neste finnes ikke");
+            if(endringer != iteratorendringer){
+                throw new ConcurrentModificationException("vet ikke hva jeg skal skrive her?");
             }
-            else{
-                if(endringer != iteratorendringer){
-                    throw new ConcurrentModificationException("vet ikke hva jeg skal skrive her?");
-                }
-                    T lagrerDenne = denne.verdi;
-                    denne = denne.neste;
+            if(!hasNext()){
+                throw new NoSuchElementException("ikke flere noder igjen");
+            }
 
-                    fjernOK = true;
-                    return lagrerDenne;
-                }
+            T lagrerDenne = denne.verdi;
+            denne = denne.neste;
+            fjernOK = true;
+            return lagrerDenne;
         }
 
         @Override
