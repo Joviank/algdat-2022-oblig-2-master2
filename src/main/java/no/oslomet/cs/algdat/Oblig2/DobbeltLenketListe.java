@@ -360,7 +360,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     public Iterator<T> iterator(int indeks) {
         indeksKontroll(indeks,false);
-        return new DobbeltLenketListeIterator();
+        return new DobbeltLenketListeIterator(indeks);
     }
 
     private class DobbeltLenketListeIterator implements Iterator<T> {
@@ -373,9 +373,17 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             fjernOK = false;  // blir sann når next() kalles
             iteratorendringer = endringer;  // teller endringer
         }
-
+        //jeg koder omtrent likt som i koden over da kun Noden denne er den eneste forskjellen
         private DobbeltLenketListeIterator(int indeks) {
-            throw new UnsupportedOperationException();
+            denne = hode;
+            int i = 0;
+        //setter pekeren denne til den noden som hører til den oppgitte indeksen
+            while(i < indeks){
+                denne = denne.neste;
+                i++;
+            }
+            fjernOK = false;
+            iteratorendringer = endringer;
         }
 
         @Override
@@ -385,17 +393,19 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         @Override
         public T next() {
-            if(endringer != iteratorendringer)
-                if(!hasNext()){
-                    throw new NoSuchElementException("Noe gikk galt");
+            if(!hasNext() == false){
+                throw new NoSuchElementException("Neste finnes ikke");
+            }
+            else{
+                if(endringer != iteratorendringer){
+                    throw new ConcurrentModificationException("vet ikke hva jeg skal skrive her?");
                 }
-                else
-                    throw new ConcurrentModificationException("Hei");
-                    T lagretDenne = denne.verdi;
+                    T lagrerDenne = denne.verdi;
                     denne = denne.neste;
 
                     fjernOK = true;
-                    return lagretDenne;
+                    return lagrerDenne;
+                }
         }
 
         @Override
