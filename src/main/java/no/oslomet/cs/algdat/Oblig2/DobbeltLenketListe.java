@@ -229,8 +229,9 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public boolean fjern(T verdi) {
-        int indeks = indeksTil(verdi);
-        if(indeks != -1){
+        if(verdi == null){
+            return false;
+        }
         Node<T> current = hode;
         while(!current.verdi.equals(verdi)){
             current = current.neste;
@@ -238,37 +239,35 @@ public class DobbeltLenketListe<T> implements Liste<T> {
                 break;
             }
         }
-        if(verdi.equals(current.verdi)) {
+        if(verdi.equals(current.verdi)){
             fjernNode(current);
-
-            antall--;
-            endringer++;
             return true;
         }
-            else{
-                return false;
-            }
-        }
-        else{
-            return false;
-        }
+        return false;
     }
+    //Lager en hjelpemetode som både kan brukes med indeks og verdi
     private void fjernNode(Node<T> P){
+        //hvis det er kun en node
         if(P == hode && P == hale){
             hode = hale = null;
         }
+        //legger til på starten hvis hode peker til neste node
         else if(P == hode){
             hode = hode.neste;
             hode.forrige = null;
         }
+        //Hvis noden er kun hale
         else if(P == hale){
             hale = hale.forrige;
             hale.neste = null;
         }
+        //Hvis noden er midt i
         else {
             P.neste.forrige = P.forrige;
             P.forrige.neste = P.neste;
         }
+        antall--;
+        endringer++;
     }
 
     @Override
@@ -278,32 +277,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         T lagretVerdi = current.verdi;
 
         fjernNode(current);
-
-        //Hvis elementet er på starten
-        /*if(indeks == 0){
-            //Hvis hode sin neste peker mot en node
-            if(current.neste != null){
-                hode = current.neste;
-                hode.forrige = null;
-            }
-            else{
-                hode = hale = null;
-            }
-        }
-
-        //Hvis elementet er på slutten
-        else if(current.neste == null){
-           hale = current.forrige;
-           hale.neste = null;
-        }
-
-        //Hvis elementet er i midten
-        else{
-            current.neste.forrige = current.forrige;
-            current.forrige.neste = current.neste;
-        }*/
-        antall--;
-        endringer++;
         return lagretVerdi;
     }
 
