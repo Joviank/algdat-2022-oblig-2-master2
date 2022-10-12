@@ -148,6 +148,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             hode.forrige = n;
             hode = n;
         }
+        //Hvis vi skal legge til en verdi imellom
         else {
             Node<T> current = finnNode(indeks);
             Node<T> P = current.forrige;
@@ -157,8 +158,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             n.neste = current;
             n.forrige = P;
         }
-        //Hvis vi skal legge til en verdi imellom
-
         antall++;
         endringer++;
     }
@@ -367,7 +366,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         @Override
         public T next() {
             if(endringer != iteratorendringer){
-                throw new ConcurrentModificationException("vet ikke hva jeg skal skrive her?");
+                throw new ConcurrentModificationException("ikke lov å endre listen imens den blir gått gjennom");
             }
             if(!hasNext()){
                 throw new NoSuchElementException("ikke flere noder igjen");
